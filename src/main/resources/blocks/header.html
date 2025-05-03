@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>Header</title>
+</head>
+<body>
+<div th:fragment="header">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container">
+            <a class="navbar-brand" href="/">TODO_List</a>
+            <div class="collapse navbar-collapse">
+                <div class="navbar-nav me-auto">
+                    <a class="nav-item nav-link active" href="/">Главная</a>
+                    <a class="nav-item nav-link" th:href="@{/tasks}">Все</a>
+                    <a class="nav-item nav-link" th:href="@{/tasks(done=true)}">Выполненные</a>
+                    <a class="nav-item nav-link" th:href="@{/tasks(done=false)}">Новые</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+</div>
+</body>
+</html>
