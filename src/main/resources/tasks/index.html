@@ -20,8 +20,6 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th><i class="bi bi-square"></i></th>
-                    <th scope="col">#</th>
                     <th scope="col">Название</th>
                     <th scope="col">Дата создания</th>
                     <th scope="col">Состояние</th>
@@ -29,14 +27,6 @@
                 </thead>
                 <tbody>
                 <tr th:each="task: ${tasks}">
-                    <td>
-                        <span th:if="$task.visible">
-                            <i class="bi bi-check-square"></i>
-                        </span>
-                        <span th:if="${!task.visible}">
-                                <i class="bi bi-square"></i>
-                        </span>
-                    </td>
                     <td th:text="${task.id}"/>
                     <td><a th:text="${task.title}"
                            th:href="@{/task/{taskId}(taskId=${task.id})}"></a></td>
@@ -46,6 +36,16 @@
             </table>
         </div>
     </div>
+    <form class="mt-3" th:action="@{/task/update}" method="post" th:object="${task}">
+        <div class="mb-3 row justify-content-end">
+            <div class="col-auto d-flex gap-2">
+                <a href="/tasks/create" class="btn btn-success">Добавить задание</a>
+                <a class="btn btn-primary" th:href="@{/}">Все</a>
+                <a class="btn btn-primary" th:href="@{/done}">Выполненные</a>
+                <a class="btn btn-primary" th:href="@{/new}">Новые</a>
+            </div>
+        </div>
+    </form>
     <footer th:insert="blocks/footer :: footer"></footer>
 </div>
 </div>
