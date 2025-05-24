@@ -20,12 +20,12 @@ public class TaskStore implements Store {
     @Override
     public Task create(Task task) {
         Session session = sf.openSession();
-        Task EmptyTask = new Task();
+        Task emptyTask = new Task();
         try {
             session.beginTransaction();
             session.save(task);
             session.getTransaction().commit();
-        } catch(Exception e) {
+        } catch (Exception e) {
             session.getTransaction().rollback();
         } finally {
             session.close();
@@ -38,9 +38,9 @@ public class TaskStore implements Store {
         Session session = sf.openSession();
         try {
             session.beginTransaction();
-           int updated = session.createQuery(
-                    "UPDATE Task SET description = :description, created = :created, done = :done " +
-                            "WHERE id = :id")
+            int updated = session.createQuery(
+                            "UPDATE Task SET description = :description, created = :created, done = :done "
+                                    + "WHERE id = :id")
                     .setParameter("description", task.getDescription())
                     .setParameter("created", task.getCreated())
                     .setParameter("done", task.getDone())
@@ -48,7 +48,7 @@ public class TaskStore implements Store {
                     .executeUpdate();
             session.getTransaction().commit();
             return updated > 0;
-        } catch(Exception e) {
+        } catch (Exception e) {
             session.getTransaction().rollback();
         } finally {
             session.close();
@@ -61,8 +61,8 @@ public class TaskStore implements Store {
         Session session = sf.openSession();
         try {
             session.beginTransaction();
-           int deleted = session.createQuery(
-                    "DELETE Task WHERE id = :id")
+            int deleted = session.createQuery(
+                            "DELETE Task WHERE id = :id")
                     .setParameter("id", id)
                     .executeUpdate();
             session.getTransaction().commit();
@@ -81,7 +81,7 @@ public class TaskStore implements Store {
         List<Task> result = List.of();
         try {
             session.beginTransaction();
-           result = session.createQuery(
+            result = session.createQuery(
                     "from Task ORDER by id", Task.class).list();
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -98,9 +98,9 @@ public class TaskStore implements Store {
         Task task = null;
         try {
             session.beginTransaction();
-           Query<Task> query =  session.createQuery(
-                    "from Task t WHERE t.id = :id", Task.class)
-                            .setParameter("id", id);
+            Query<Task> query = session.createQuery(
+                            "from Task t WHERE t.id = :id", Task.class)
+                    .setParameter("id", id);
             task = query.uniqueResult();
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -134,7 +134,7 @@ public class TaskStore implements Store {
         List<Task> result = List.of();
         try {
             session.beginTransaction();
-           result = session.createQuery(
+            result = session.createQuery(
                     "from Task WHERE done = true", Task.class).list();
             session.getTransaction().commit();
         } catch (Exception e) {
@@ -150,14 +150,14 @@ public class TaskStore implements Store {
         Session session = sf.openSession();
         try {
             session.beginTransaction();
-           int updated = session.createQuery(
-                            "UPDATE Task SET done = true " +
-                                    "WHERE id = :id")
+            int updated = session.createQuery(
+                            "UPDATE Task SET done = true "
+                                    + "WHERE id = :id")
                     .setParameter("id", id)
                     .executeUpdate();
             session.getTransaction().commit();
             return updated > 0;
-        } catch(Exception e) {
+        } catch (Exception e) {
             session.getTransaction().rollback();
         } finally {
             session.close();
