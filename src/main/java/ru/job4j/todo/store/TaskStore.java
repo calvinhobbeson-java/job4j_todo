@@ -20,6 +20,7 @@ public class TaskStore implements Store {
     @Override
     public Task create(Task task) {
         Session session = sf.openSession();
+        Task EmptyTask = new Task();
         try {
             session.beginTransaction();
             session.save(task);
@@ -38,7 +39,7 @@ public class TaskStore implements Store {
         try {
             session.beginTransaction();
            int updated = session.createQuery(
-                    "UPDATE Task SET description = :description, created = :created, done = :done" +
+                    "UPDATE Task SET description = :description, created = :created, done = :done " +
                             "WHERE id = :id")
                     .setParameter("description", task.getDescription())
                     .setParameter("created", task.getCreated())
@@ -80,8 +81,8 @@ public class TaskStore implements Store {
         List<Task> result = List.of();
         try {
             session.beginTransaction();
-            session.createQuery(
-                    "from Tasks ORDER by id").list();
+           result = session.createQuery(
+                    "from Task ORDER by id", Task.class).list();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
@@ -98,7 +99,7 @@ public class TaskStore implements Store {
         try {
             session.beginTransaction();
            Query<Task> query =  session.createQuery(
-                    "from Tasks t WHERE t.id = :id", Task.class)
+                    "from Task t WHERE t.id = :id", Task.class)
                             .setParameter("id", id);
             task = query.uniqueResult();
             session.getTransaction().commit();
@@ -116,8 +117,8 @@ public class TaskStore implements Store {
         List<Task> result = List.of();
         try {
             session.beginTransaction();
-            session.createQuery(
-                    "from Tasks WHERE done = false").list();
+            result = session.createQuery(
+                    "from Task WHERE done = false", Task.class).list();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
@@ -133,8 +134,8 @@ public class TaskStore implements Store {
         List<Task> result = List.of();
         try {
             session.beginTransaction();
-            session.createQuery(
-                    "from Tasks WHERE done = true").list();
+           result = session.createQuery(
+                    "from Task WHERE done = true", Task.class).list();
             session.getTransaction().commit();
         } catch (Exception e) {
             session.getTransaction().rollback();
@@ -150,7 +151,7 @@ public class TaskStore implements Store {
         try {
             session.beginTransaction();
            int updated = session.createQuery(
-                            "UPDATE Task SET done = true" +
+                            "UPDATE Task SET done = true " +
                                     "WHERE id = :id")
                     .setParameter("id", id)
                     .executeUpdate();

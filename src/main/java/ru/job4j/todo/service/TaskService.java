@@ -24,4 +24,6 @@ public interface TaskService {
     Collection<TaskDto> findDone();
 
     boolean setDoneById(int id);
+
+
 }
