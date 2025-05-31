@@ -19,7 +19,6 @@ public class TaskController {
 
     @GetMapping
     public String getAll(@RequestParam(required = false) Boolean done, Model model) {
-        System.out.println("done param = " + done);
         if (Boolean.TRUE.equals(done)) {
             model.addAttribute("tasks", service.findDone());
         } else if (Boolean.FALSE.equals(done)) {
