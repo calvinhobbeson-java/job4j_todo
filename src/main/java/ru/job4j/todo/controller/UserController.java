@@ -36,7 +36,7 @@ public class UserController {
             return "redirect:/tasks";
         } catch (Exception e) {
             model.addAttribute("message", e.getMessage());
-            return "errors/404";
+            return "errors/500";
         }
     }
 
