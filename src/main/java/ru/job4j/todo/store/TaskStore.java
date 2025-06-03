@@ -6,161 +6,73 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.repository.CrudRepository;
 
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
+import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Repository
 @AllArgsConstructor
 public class TaskStore implements Store {
-    private final SessionFactory sf;
+    private final CrudRepository crudRepository;
 
 
     @Override
     public Task create(Task task) {
-        Session session = sf.openSession();
-        Task emptyTask = new Task();
-        try {
-            session.beginTransaction();
-            session.save(task);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
+        crudRepository.run(session -> session.persist(task));
         return task;
     }
 
     @Override
     public boolean update(Task task) {
-        Session session = sf.openSession();
         try {
-            session.beginTransaction();
-            int updated = session.createQuery(
-                            "UPDATE Task SET description = :description, created = :created, done = :done "
-                                    + "WHERE id = :id")
-                    .setParameter("description", task.getDescription())
-                    .setParameter("created", task.getCreated())
-                    .setParameter("done", task.getDone())
-                    .setParameter("id", task.getId())
-                    .executeUpdate();
-            session.getTransaction().commit();
-            return updated > 0;
+            crudRepository.run(session -> session.merge(task));
+            return true;
         } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
+            e.printStackTrace();
         }
         return false;
     }
 
     @Override
     public boolean deleteById(int id) {
-        Session session = sf.openSession();
         try {
-            session.beginTransaction();
-            int deleted = session.createQuery(
-                            "DELETE Task WHERE id = :id")
-                    .setParameter("id", id)
-                    .executeUpdate();
-            session.getTransaction().commit();
-            return deleted > 0;
+            crudRepository.run("DELETE from Task WHERE id = :id", Map.of("id", id));
+            return true;
         } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
+            e.printStackTrace();
         }
         return false;
     }
 
     @Override
     public Collection<Task> findAll() {
-        Session session = sf.openSession();
-        List<Task> result = List.of();
-        try {
-            session.beginTransaction();
-            result = session.createQuery(
-                    "from Task ORDER by id", Task.class).list();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
-        return result;
+        return crudRepository.query("from Task ORDER by id", Task.class);
     }
 
     @Override
     public Optional<Task> findById(int id) {
-        Session session = sf.openSession();
-        Task task = null;
-        try {
-            session.beginTransaction();
-            Query<Task> query = session.createQuery(
-                            "from Task t WHERE t.id = :id", Task.class)
-                    .setParameter("id", id);
-            task = query.uniqueResult();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
-        return Optional.ofNullable(task);
+        return crudRepository.optional("from Task t WHERE t.id = :id", Task.class, Map.of("id", id));
     }
 
     @Override
     public Collection<Task> findNew() {
-        Session session = sf.openSession();
-        List<Task> result = List.of();
-        try {
-            session.beginTransaction();
-            result = session.createQuery(
-                    "from Task WHERE done = false", Task.class).list();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
-        return result;
+        return crudRepository.query("from Task WHERE done = false", Task.class);
     }
 
     @Override
     public Collection<Task> findDone() {
-        Session session = sf.openSession();
-        List<Task> result = List.of();
-        try {
-            session.beginTransaction();
-            result = session.createQuery(
-                    "from Task WHERE done = true", Task.class).list();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
-        return result;
+        return crudRepository.query("from Task WHERE done = true", Task.class);
     }
 
     @Override
     public boolean setDoneById(int id) {
-        Session session = sf.openSession();
         try {
-            session.beginTransaction();
-            int updated = session.createQuery(
-                            "UPDATE Task SET done = true "
-                                    + "WHERE id = :id")
-                    .setParameter("id", id)
-                    .executeUpdate();
-            session.getTransaction().commit();
-            return updated > 0;
+            crudRepository.optional("UPDATE Task SET done = true WHERE id = :id", Task.class, Map.of("id", id));
+            return true;
         } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
+            e.printStackTrace();
         }
         return false;
     }

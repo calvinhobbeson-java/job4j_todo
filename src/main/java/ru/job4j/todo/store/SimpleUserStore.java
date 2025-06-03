@@ -7,48 +7,25 @@ import org.hibernate.SessionFactory;
 import org.springframework.stereotype.Repository;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.repository.CrudRepository;
 
+import java.util.Map;
 import java.util.Optional;
 
 @Repository
 @AllArgsConstructor
 public class SimpleUserStore implements UserStore {
-    private final SessionFactory sf;
+    private final CrudRepository crudRepository;
 
     @Override
-    public Optional<User> save(User user) {
-        Session session = sf.openSession();
-        try {
-            session.beginTransaction();
-            session.save(user);
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-            e.printStackTrace();
-            return Optional.empty();
-        } finally {
-            session.close();
-        }
-        return Optional.ofNullable(user);
+    public User save(User user) {
+        crudRepository.run(session -> session.persist(user));
+        return user;
     }
 
     @Override
     public Optional<User> findByLoginAndPassword(String login, String password) {
-        Session session = sf.openSession();
-        User user = null;
-        try {
-            session.beginTransaction();
-            Query<User> query = session.createQuery(
-                            "from User u WHERE u.login = :login and u.password = :password", User.class)
-                    .setParameter("login", login)
-                    .setParameter("password", password);
-            user = query.uniqueResult();
-            session.getTransaction().commit();
-        } catch (Exception e) {
-            session.getTransaction().rollback();
-        } finally {
-            session.close();
-        }
-        return Optional.ofNullable(user);
+        return crudRepository.optional("from User u WHERE u.login = :login and u.password = :password",
+                User.class, Map.of("login", login, "password", password));
     }
 }
