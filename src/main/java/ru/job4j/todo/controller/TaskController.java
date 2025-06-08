@@ -4,8 +4,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import ru.job4j.todo.model.Task;
+import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.TaskService;
 
+import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
 
 @Controller
@@ -46,10 +48,11 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Task task, Model model) {
+    public String create(@ModelAttribute Task task, Model model, HttpSession httpSession) {
         try {
             task.setCreated(LocalDateTime.now());
             task.setDone(false);
+            task.setUser((User) httpSession.getAttribute("user"));
             service.create(task);
             return "redirect:/tasks";
         } catch (Exception e) {

@@ -19,5 +19,8 @@ public class Task {
     private String description;
     private LocalDateTime created;
     private Boolean done;
+    @ManyToOne
+    @JoinColumn(name = "userid")
+    private User user;
 }
 

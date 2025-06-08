@@ -20,7 +20,7 @@
             <table class="table">
                 <thead>
                 <tr>
-                    <th scope="col">ID</th>
+                    <th scope="col">UserID</th>
                     <th scope="col">Название</th>
                     <th scope="col">Дата создания</th>
                     <th scope="col">Состояние</th>
@@ -28,7 +28,7 @@
                 </thead>
                 <tbody>
                 <tr th:each="task: ${tasks}">
-                    <td th:text="${task.id}"></td>
+                    <td th:text="${task.userId}"></td>
                     <td><a th:href="@{/tasks/one/{id}(id=${task.id})}" th:text="${task.description}"></a></td>
                     <td th:text="${task.created}"></td>
                     <td th:text="${task.done}"></td>
