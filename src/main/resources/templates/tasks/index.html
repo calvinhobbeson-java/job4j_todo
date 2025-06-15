@@ -24,6 +24,7 @@
                     <th scope="col">Название</th>
                     <th scope="col">Дата создания</th>
                     <th scope="col">Состояние</th>
+                    <th scope="col">Приоритет</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -32,6 +33,7 @@
                     <td><a th:href="@{/tasks/one/{id}(id=${task.id})}" th:text="${task.description}"></a></td>
                     <td th:text="${task.created}"></td>
                     <td th:text="${task.done}"></td>
+                    <td><a th:href="@{/tasks/one/{id}(id=${task.id})}" th:text="${task.priority}"></a></td>
                 </tr>
                 </tbody>
             </table>

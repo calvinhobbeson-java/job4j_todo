@@ -42,7 +42,7 @@ public class SimpleTaskService implements TaskService {
     @Override
     public Optional<TaskDto> findById(int id) {
         return store.findById(id)
-                .map(task -> new TaskDto(task.getId(), task.getUser().getId(), task.getDescription(), task.getCreated(), task.getDone()));
+                .map(task -> new TaskDto(task.getId(), task.getUser().getId(), task.getDescription(), task.getCreated(), task.getDone(), task.getPriority().getName()));
     }
 
     @Override
@@ -62,7 +62,7 @@ public class SimpleTaskService implements TaskService {
 
     private List<TaskDto> tasksToDtos(Collection<Task> taskCollection) {
         return taskCollection.stream()
-                .map(task -> new TaskDto(task.getId(), task.getUser().getId(), task.getDescription(), task.getCreated(), task.getDone()))
+                .map(task -> new TaskDto(task.getId(), task.getUser().getId(), task.getDescription(), task.getCreated(), task.getDone(), task.getPriority().getName()))
                 .toList();
     }
 }

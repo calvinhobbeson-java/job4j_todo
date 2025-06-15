@@ -48,7 +48,7 @@ public class TaskStore implements Store {
 
     @Override
     public Collection<Task> findAll() {
-        return crudRepository.query("from Task ORDER by id", Task.class);
+        return crudRepository.query("from Task t JOIN FETCH t.priority", Task.class);
     }
 
     @Override
@@ -58,12 +58,12 @@ public class TaskStore implements Store {
 
     @Override
     public Collection<Task> findNew() {
-        return crudRepository.query("from Task WHERE done = false", Task.class);
+        return crudRepository.query("from Task t JOIN FETCH t.priority WHERE done = false", Task.class);
     }
 
     @Override
     public Collection<Task> findDone() {
-        return crudRepository.query("from Task WHERE done = true", Task.class);
+        return crudRepository.query("from Task t JOIN FETCH t.priority WHERE done = true", Task.class);
     }
 
     @Override
