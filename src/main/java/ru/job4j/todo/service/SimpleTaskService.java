@@ -74,9 +74,17 @@ public class SimpleTaskService implements TaskService {
 
     private List<TaskDto> tasksToDtos(Collection<Task> taskCollection) {
         return taskCollection.stream()
-                .map(task -> new TaskDto(task.getId(), task.getUser().getId(), task.getDescription()
-                        , task.getCreated(), task.getDone(), task.getPriority().getName()
-                        , task.getCategories().stream().map(Category::getName).collect(Collectors.joining(", "))))
+                .map(task -> new TaskDto(
+                        task.getId(),
+                        task.getUser().getId(),
+                        task.getDescription(),
+                        task.getCreated(),
+                        task.getDone(),
+                        task.getPriority().getName(),
+                        task.getCategories().stream()
+                                .map(Category::getName)
+                                .collect(Collectors.joining(", "))
+                ))
                 .toList();
     }
 }
