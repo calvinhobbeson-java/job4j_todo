@@ -3,20 +3,27 @@ package ru.job4j.todo.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
+import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.TaskService;
+import ru.job4j.todo.store.CategoryStore;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Controller
 @RequestMapping("/tasks")
 public class TaskController {
     private final TaskService service;
+    private final CategoryService categoryService;
 
-    public TaskController(TaskService service) {
+    public TaskController(TaskService service, CategoryService categoryService) {
         this.service = service;
+        this.categoryService = categoryService;
     }
 
     @GetMapping
@@ -34,6 +41,7 @@ public class TaskController {
     @GetMapping("/create")
     public String getCreationPage(Model model) {
         model.addAttribute("task", new Task());
+        model.addAttribute("categories", categoryService.findAll());
         return "tasks/create";
     }
 
@@ -48,11 +56,13 @@ public class TaskController {
     }
 
     @PostMapping("/create")
-    public String create(@ModelAttribute Task task, Model model, HttpSession httpSession) {
+    public String create(@ModelAttribute Task task, @RequestParam("categoryIds") List<Integer> categoryId, Model model, HttpSession httpSession) {
         try {
             task.setCreated(LocalDateTime.now());
             task.setDone(false);
             task.setUser((User) httpSession.getAttribute("user"));
+            List<Category> listCategory = (List<Category>) categoryService.findAllById(categoryId);
+            task.setCategories(new ArrayList<>(listCategory));
             service.create(task);
             return "redirect:/tasks";
         } catch (Exception e) {

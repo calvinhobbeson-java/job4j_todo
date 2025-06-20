@@ -3,15 +3,17 @@ package ru.job4j.todo.service;
 import org.apache.tomcat.util.descriptor.web.SecurityRoleRef;
 import org.springframework.stereotype.Service;
 import ru.job4j.todo.dto.TaskDto;
+import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.store.Store;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
-public class SimpleTaskService implements TaskService {
+public class  SimpleTaskService implements TaskService {
 
     private final Store store;
 
@@ -42,7 +44,9 @@ public class SimpleTaskService implements TaskService {
     @Override
     public Optional<TaskDto> findById(int id) {
         return store.findById(id)
-                .map(task -> new TaskDto(task.getId(), task.getUser().getId(), task.getDescription(), task.getCreated(), task.getDone(), task.getPriority().getName()));
+                .map(task -> new TaskDto(task.getId(), task.getUser().getId(), task.getDescription()
+                        , task.getCreated(), task.getDone(), task.getPriority().getName()
+                        , task.getCategories().stream().map(Category::getName).collect(Collectors.joining(", "))));
     }
 
     @Override
@@ -62,7 +66,9 @@ public class SimpleTaskService implements TaskService {
 
     private List<TaskDto> tasksToDtos(Collection<Task> taskCollection) {
         return taskCollection.stream()
-                .map(task -> new TaskDto(task.getId(), task.getUser().getId(), task.getDescription(), task.getCreated(), task.getDone(), task.getPriority().getName()))
+                .map(task -> new TaskDto(task.getId(), task.getUser().getId(), task.getDescription()
+                        , task.getCreated(), task.getDone(), task.getPriority().getName()
+                , task.getCategories().stream().map(Category::getName).collect(Collectors.joining(", "))))
                 .toList();
     }
 }

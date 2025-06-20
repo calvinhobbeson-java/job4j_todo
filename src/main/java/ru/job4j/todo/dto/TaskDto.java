@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import ru.job4j.todo.model.Priority;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Data
 @AllArgsConstructor
@@ -18,4 +19,5 @@ public class TaskDto {
     private LocalDateTime created;
     private Boolean done;
     private String priority;
+    private String categories;
 }

@@ -11,4 +11,8 @@
     <include file="001_ddl_create_task_table.sql" relativeToChangelogFile="true"/>
     <include file="002_ddl_create_todo_user_table.sql" relativeToChangelogFile="true"/>
     <include file="003_dml_alter_tasks_table.sql" relativeToChangelogFile="true"/>
+    <include file="004_priorities.sql" relativeToChangelogFile="true"/>
+    <include file="005_ddl_create_categories_table.sql" relativeToChangelogFile="true"/>
+    <include file="006_dml_insert_categories.sql" relativeToChangelogFile="true"/>
+    <include file="007_ddl_create_categories_tasks_table.sql" relativeToChangelogFile="true"/>
 </databaseChangeLog>

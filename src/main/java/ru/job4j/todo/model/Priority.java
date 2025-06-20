@@ -14,8 +14,6 @@ public class Priority {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private int id;
-
     private String name;
-
     private int position;
 }
