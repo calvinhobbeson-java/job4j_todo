@@ -13,7 +13,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
-public class  SimpleTaskService implements TaskService {
+public class SimpleTaskService implements TaskService {
 
     private final Store store;
 
@@ -44,9 +44,17 @@ public class  SimpleTaskService implements TaskService {
     @Override
     public Optional<TaskDto> findById(int id) {
         return store.findById(id)
-                .map(task -> new TaskDto(task.getId(), task.getUser().getId(), task.getDescription()
-                        , task.getCreated(), task.getDone(), task.getPriority().getName()
-                        , task.getCategories().stream().map(Category::getName).collect(Collectors.joining(", "))));
+                .map(task -> new TaskDto(
+                        task.getId(),
+                        task.getUser().getId(),
+                        task.getDescription(),
+                        task.getCreated(),
+                        task.getDone(),
+                        task.getPriority().getName(),
+                        task.getCategories().stream()
+                                .map(Category::getName)
+                                .collect(Collectors.joining(", "))
+                ));
     }
 
     @Override
@@ -68,7 +76,7 @@ public class  SimpleTaskService implements TaskService {
         return taskCollection.stream()
                 .map(task -> new TaskDto(task.getId(), task.getUser().getId(), task.getDescription()
                         , task.getCreated(), task.getDone(), task.getPriority().getName()
-                , task.getCategories().stream().map(Category::getName).collect(Collectors.joining(", "))))
+                        , task.getCategories().stream().map(Category::getName).collect(Collectors.joining(", "))))
                 .toList();
     }
 }
