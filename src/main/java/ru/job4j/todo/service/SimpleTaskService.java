@@ -80,7 +80,9 @@ public class SimpleTaskService implements TaskService {
                         task.getDescription(),
                         task.getCreated(),
                         task.getDone(),
-                        task.getPriority().getName(),
+                        task.getPriority() != null
+                                ? task.getPriority().getName()
+                                : "нет приоритета",
                         task.getCategories().stream()
                                 .map(Category::getName)
                                 .collect(Collectors.joining(", "))

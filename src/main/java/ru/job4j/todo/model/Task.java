@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -19,7 +20,7 @@ public class Task {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String description;
-    private LocalDateTime created;
+    private LocalDateTime created = LocalDateTime.now(ZoneId.of("UTC"));
     private Boolean done;
     @ManyToOne
     @JoinColumn(name = "userid")
@@ -32,8 +33,8 @@ public class Task {
     @ManyToMany
     @JoinTable(
             name = "categories_tasks",
-            joinColumns = { @JoinColumn(name = "task_id") },
-            inverseJoinColumns = { @JoinColumn(name = "category_id") }
+            joinColumns = {@JoinColumn(name = "task_id")},
+            inverseJoinColumns = {@JoinColumn(name = "category_id")}
     )
     private List<Category> categories = new ArrayList<>();
 }

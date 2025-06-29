@@ -26,6 +26,8 @@
                     <th scope="col">Состояние</th>
                     <th scope="col">Приоритет</th>
                     <th scope="col">Категории</th>
+                    <th scope="col">Время создания</th>
+
                 </tr>
                 </thead>
                 <tbody>
@@ -34,8 +36,9 @@
                     <td><a th:href="@{/tasks/one/{id}(id=${task.id})}" th:text="${task.description}"></a></td>
                     <td th:text="${task.created}"></td>
                     <td th:text="${task.done}"></td>
-                    <td><a th:href="@{/tasks/one/{id}(id=${task.id})}" th:text="${task.priority}"></a></td>
-                    <td><a th:href="@{/tasks/one/{id}(id=${task.id})}" th:text="${task.categories}"></a></td>
+                    <td th:text="${task.priority}"></td>
+                    <td th:text="${task.categories}"></td>
+                    <td th:text="${#temporals.format(task.created, 'HH:mm dd-MM-yyyy')}"></td>
                 </tr>
                 </tbody>
             </table>

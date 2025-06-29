@@ -3,16 +3,20 @@ package ru.job4j.todo.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.job4j.todo.dto.TaskDto;
 import ru.job4j.todo.model.Category;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.CategoryService;
 import ru.job4j.todo.service.TaskService;
 import ru.job4j.todo.store.CategoryStore;
+import ru.job4j.todo.utility.TimeConverter;
 
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @Controller
@@ -27,13 +31,20 @@ public class TaskController {
     }
 
     @GetMapping
-    public String getAll(@RequestParam(required = false) Boolean done, Model model) {
+    public String getAll(@RequestParam(required = false) Boolean done, Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        String timeZone = user.getTimezone();
+        Collection<TaskDto> tasks;
         if (Boolean.TRUE.equals(done)) {
-            model.addAttribute("tasks", service.findDone());
+            tasks = service.findDone();
         } else if (Boolean.FALSE.equals(done)) {
-            model.addAttribute("tasks", service.findNew());
+            tasks = service.findNew();
         } else {
-            model.addAttribute("tasks", service.findAll());
+            tasks = service.findAll();
+        }
+        for (TaskDto task : tasks) {
+            task.setCreated(TimeConverter.conversion(task.getCreated(), timeZone));
+            model.addAttribute("tasks", tasks);
         }
         return "tasks/index";
     }
@@ -63,6 +74,7 @@ public class TaskController {
             task.setUser((User) httpSession.getAttribute("user"));
             List<Category> listCategory = (List<Category>) categoryService.findAllById(categoryId);
             task.setCategories(new ArrayList<>(listCategory));
+            task.setCreated(LocalDateTime.now(ZoneId.of("UTC")));
             service.create(task);
             return "redirect:/tasks";
         } catch (Exception e) {

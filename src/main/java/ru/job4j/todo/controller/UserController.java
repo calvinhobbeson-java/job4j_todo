@@ -9,8 +9,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import ru.job4j.todo.model.Task;
 import ru.job4j.todo.model.User;
 import ru.job4j.todo.service.UserService;
+
 import javax.servlet.http.HttpSession;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.TimeZone;
 
 @Controller
 @RequestMapping("/users")
@@ -24,7 +27,13 @@ public class UserController {
 
     @GetMapping("/save")
     public String getSavePage(Model model) {
+        var zones = new ArrayList<TimeZone>();
+        for (String id : TimeZone.getAvailableIDs()) {
+            zones.add(TimeZone.getTimeZone(id));
+        }
         model.addAttribute("user", new User());
+        model.addAttribute("zones", zones);
+        model.addAttribute("defaultZone", TimeZone.getDefault().getID());
         return "users/save";
     }
 
